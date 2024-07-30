@@ -3,10 +3,7 @@ import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, Ta
 import React, { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import AddBeginnerCourse from './components/AddBegginerCourse';
-import ViewBeginnerCourse from './components/ViewBeginnerCourse';
-import { useDispatch } from 'react-redux';
-import { getBeginnerCourse } from '../../../store/actions/courseActions';
+
 
 const BeginnerCoursesMain = () => {
   const theme = useTheme();
@@ -15,26 +12,10 @@ const BeginnerCoursesMain = () => {
   const [isAddingCourse, setIsAddingCourse] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  const [courseData, setCourseData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await dispatch(getBeginnerCourse());
-        setCourseData(res.data.data);
-      } catch (err) {
-        console.error("Failed to fetch beginner courses:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchData();
-  }, [dispatch]);
 
   const handleMenuClick = (event, id) => {
     setAnchorEl(event.currentTarget);
@@ -45,44 +26,14 @@ const BeginnerCoursesMain = () => {
     setAnchorEl(null);
   };
 
-  const handleDeleteClick = () => {
-    console.log('Delete course:', currentRowId);
-    handleMenuClose();
-  };
 
-  const handleAddCourseClick = () => {
-    setIsAddingCourse(true);
-  };
 
-  const handleBackClick = () => {
-    setIsAddingCourse(false);
-    setIsEditing(false);
-  };
 
-  const handleEditClick = () => {
-    setIsEditing(true);
-    handleMenuClose();
-  };
+
 
   return (
     <Box>
-      {isAddingCourse ? (
-        <>
-          <Button variant='outlined' onClick={handleBackClick} sx={{ marginBottom: '1rem' }}>
-            &lt; Back to Courses
-          </Button>
-          <AddBeginnerCourse />
-        </>
-      ) : isEditing && currentRowId ? (
-        <>
-          <Button variant='outlined' onClick={handleBackClick} sx={{ marginBottom: '1rem' }}>
-            &lt; Back to Courses
-          </Button>
-          <ViewBeginnerCourse courseId={currentRowId} />
-        </>
-      ) : (
-        <>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography
               sx={{
                 color: theme.palette.primary.main,
@@ -93,7 +44,7 @@ const BeginnerCoursesMain = () => {
               Beginner Courses
             </Typography>
 
-            <Button variant='outlined' onClick={handleAddCourseClick}>
+            <Button variant='outlined' >
               + Add Course
             </Button>
           </Box>
@@ -117,17 +68,16 @@ const BeginnerCoursesMain = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {courseData.map((row) => (
-                    <TableRow
-                      key={row._id} // Use unique ID as key
+                <TableRow
+                     
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                       <TableCell component='th' scope='row' sx={{ color: 'grey' }}>
-                        {row.title}
+                        name
                       </TableCell>
-                      <TableCell sx={{ color: 'grey' }}>{row.courseDuration} weeks</TableCell>
-                      <TableCell sx={{ color: 'grey' }}>{row.lectureDuration} hours</TableCell>
-                      <TableCell sx={{ color: 'grey' }}>$ {row.price}</TableCell>
+                      <TableCell sx={{ color: 'grey' }}>Duration</TableCell>
+                      <TableCell sx={{ color: 'grey' }}>3 hours</TableCell>
+                      <TableCell sx={{ color: 'grey' }}>$ 100</TableCell>
                       <TableCell>
                         <IconButton onClick={(event) => handleMenuClick(event, row._id)}>
                           <MoreVertIcon />
@@ -137,18 +87,16 @@ const BeginnerCoursesMain = () => {
                           open={Boolean(anchorEl)}
                           onClose={handleMenuClose}
                         >
-                          <MenuItem onClick={handleEditClick}>View</MenuItem>
-                          <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+                          <MenuItem >View</MenuItem>
+                          <MenuItem >Delete</MenuItem>
                         </Menu>
                       </TableCell>
                     </TableRow>
-                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
           )}
-        </>
-      )}
+
     </Box>
   );
 };
